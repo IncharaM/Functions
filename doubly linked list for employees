@@ -1,0 +1,139 @@
+#include <stdio.h>
+#include<stdlib.h>
+struct employee
+{
+    char ssn[100],name[100];
+    char dept[100],designation[100];
+    float sal;
+    char phno[100];
+};
+typedef struct employee emp;
+struct node
+{
+    emp p;
+    struct node *llink;
+    struct node *rlink;
+};
+typedef struct node dll;
+void insert_front(dll *);
+void display(dll *);
+void insert_rear(dll *);
+void delete_front(dll *);
+void delete_rear(dll *);
+int main()
+{
+    int ch,n,i;
+    dll h={.rlink=0,.llink=0};
+    for(;;)
+    {
+        printf("1.insert front\n2.display\n3.n employee insert rear\n4.insert rear\n5.delete front\n6.delete rear\n7.exit\nenter the choice\n");
+        scanf("%d",&ch);
+        switch(ch)
+        {
+            case 1:insert_front(&h);
+                break;
+            case 2:display(&h);
+                break;
+            case 3:printf("enter number of employees\n");
+                scanf("%d",&n);
+                for(i=0;i<n;i++)
+                    insert_rear(&h);
+                break;
+            case 4:insert_rear(&h);
+                break;
+            case 5:delete_front(&h);
+                break;
+            case 6:delete_rear(&h);
+                break;
+            default:exit(0);
+            
+        }
+    }
+}
+void insert_front(dll *h)
+{
+    dll *t;
+    t=(dll *)malloc(sizeof(dll));
+    printf("enter ssn,name,dept,designation,sal,phno\n");
+    scanf("%s%s%s%s%f%s",(t->p).ssn,(t->p).name,(t->p).dept,(t->p).designation,&((t->p).sal),(t->p).phno);
+    t->llink=0;
+    t->rlink=0;
+    if(h->rlink==0)
+    {
+        h->rlink=t;
+        return;
+    }
+    t->rlink=h->rlink;
+    (h->rlink)->llink=t;
+    h->rlink=t;
+}
+void display(dll *h)
+{
+    dll *t;
+    if(h->rlink==0)
+    {
+        printf("empty\n");
+        return;
+        
+    }
+    printf("details are\n");
+    for(t=h->rlink;t!=0;t=t->rlink)
+        printf("%s\n%s\n%s\n%s\n%f\n%s\n",(t->p).ssn,(t->p).name,(t->p).dept,(t->p).designation,((t->p).sal),(t->p).phno);
+}
+void insert_rear(dll *h)
+{
+    dll *t,*l;
+    t=(dll *)malloc(sizeof(dll));
+    printf("enter ssn,name,dept,designation,sal,phno\n");
+    scanf("%s%s%s%s%f%s",(t->p).ssn,(t->p).name,(t->p).dept,(t->p).designation,&((t->p).sal),(t->p).phno);
+    t->llink=0;
+    t->rlink=0;
+    if(h->rlink==0)
+    {
+        h->rlink=t;
+        return;
+    }
+    for(l=h->rlink;l->rlink!=0;l=l->rlink);
+    l->rlink=t;
+    t->llink=l;
+}
+void delete_front(dll *h)
+{
+    dll *t;
+    if(h->rlink==0)
+    {
+        printf("empty\n");
+        return;
+    }
+    /*if((h->rlink)->rlink==0)
+    {
+        printf("%s\n%s\n%s\n%s\n%f\n%s\n",((h->rlink)->p).ssn,((h->rlink)->p).name,((h->rlink)->p).dept,((h->rlink)->p).designation,(((h->rlink)->p).sal),((h->rlink)->p).phno")
+        free(h->rlink);
+        h->rlink=0;
+        return;
+    }*/
+    t=h->rlink;
+    printf("deleted details are\n%s\n%s\n%s\n%s\n%f\n%s\n",(t->p).ssn,(t->p).name,(t->p).dept,(t->p).designation,((t->p).sal),(t->p).phno);
+    h->rlink=t->rlink;
+    if(h->rlink)
+        (h->rlink)->llink=0;
+    free(t);
+}
+void delete_rear(dll *h)
+{
+    dll *t,*l;
+    if(h->rlink==0)
+    {
+        printf("empty\n");
+        return;
+    }
+    if((h->rlink)->rlink==0)
+    {
+        delete_front(h);
+        return;
+    }
+    for(l=0,t=h->rlink;t->rlink!=0;l=t,t=t->rlink);
+    printf("deleted details are\n%s\n%s\n%s\n%s\n%f\n%s\n",(t->p).ssn,(t->p).name,(t->p).dept,(t->p).designation,((t->p).sal),(t->p).phno);
+    l->rlink=0;
+    free(t);
+}
