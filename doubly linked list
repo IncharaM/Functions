@@ -1,0 +1,184 @@
+#include <stdio.h>
+#include<stdlib.h>
+struct node
+{
+    int data;
+    struct node *llink;
+    struct node *rlink;
+};
+typedef struct node dll;
+void insert_at_pos(dll *);
+void insert_front(dll *);
+void insert_rear(dll *);
+void display(dll *);
+void delete_at_pos(dll *);
+void delete_front(dll *);
+void delete_rear(dll *);
+int main()
+{
+    int ch,n,i;
+    dll h={.rlink=0,.llink=0};
+    for(;;)
+    {
+        printf("1.insert at pos\n2.delete at pos\n3.insert front\n4.insert rear\n5.display\n6.delete front\n7.delete rear\nexit\nenter the choice\n");
+        scanf("%d",&ch);
+        switch(ch)
+        {
+            case 1:insert_at_pos(&h);
+                break;
+            case 2:delete_at_pos(&h);
+                break;
+            case 3:insert_front(&h);
+                break;
+            case 4:insert_rear(&h);
+                break;
+            case 5:display(&h);
+                break;
+            case 6:delete_front(&h);
+                break;
+            case 7:delete_rear(&h);
+                break;
+            default:exit(0);
+        }
+    }
+}
+void insert_at_pos(dll *h)
+{
+    int cnt=0,pos;
+    dll *t,*l;
+    if(h->rlink==0)
+        cnt=0;
+    else
+        for(t=h->rlink;t!=0;t=t->rlink,cnt++);
+    printf("\ncount=%d\n",cnt);
+    printf("enter the position\n");
+    scanf("%d",&pos);
+    if(pos>cnt+1 || pos<1)
+    {
+        printf("insertion not possible\n");
+        return;
+    }
+    if(pos==1)
+    {
+        insert_front(h);
+        return;
+    }
+    if(pos==cnt)
+    {
+        insert_rear(h);
+        return;
+    }
+    pos--;
+    for(l=0,t=h->rlink;pos!=0;l=t,t=t->rlink,pos--);
+    insert_front(t);
+    l->rlink=t;
+}
+void insert_front(dll *h)
+{
+    dll *t;
+    t=(dll *)malloc(sizeof(dll));
+    scanf("%d",&(t->data));
+    t->llink=0;
+    t->rlink=0;
+    if(h->rlink==0)
+    {
+        h->rlink=t;
+        return;
+    }
+    t->rlink=h->rlink;
+    (h->rlink)->llink=t;
+    h->rlink=t;
+}
+void insert_rear(dll *h)
+{
+    dll *t,*l;
+    t=(dll *)malloc(sizeof(dll));
+    scanf("%d",&(t->data));
+    t->llink=0;
+    t->rlink=0;
+    if(h->rlink==0)
+    {
+        h->rlink=t;
+        return;
+    }
+    for(l=h->rlink;l->rlink!=0;l=l->rlink);
+    l->rlink=t;
+    t->llink=l;
+}
+void display(dll *h)
+{
+    dll *t;
+    if(h->rlink==0)
+    {
+        printf("empty\n");
+        return;
+    }
+    printf("data is\n");
+    for(t=h->rlink;t!=0;t=t->rlink)
+        printf("%d",t->data);
+}
+void delete_at_pos(dll *h)
+{
+    int cnt=0,pos;
+    dll *t,*p;
+    if(h->rlink==0)
+        cnt=0;
+    else
+        for(p=0,t=h->rlink;t!=0;p=t,t=t->rlink,cnt++);
+    printf("\ncount=%d\n",cnt);
+    printf("enter the position\n");
+    scanf("%d",&pos);
+    if(pos>cnt||pos<1)
+    {
+        printf("deletion not possible\n");
+        return;
+    }
+    if(pos==1)
+    {
+        delete_front(h);
+        return;
+    }
+    if(pos==cnt)
+    {
+        delete_rear(h);
+        return;
+    }
+    for(p=0,t=h->rlink;pos!=1;p=t,t=t->rlink,pos--);
+    //delete_front(t);
+    p->rlink=t->rlink;
+    (p->rlink)->llink=p;
+    free(t);
+}
+void delete_front(dll *h)
+{
+    dll *t;
+    if(h->rlink==0)
+    {
+        printf("empty\n");
+        return;
+    }
+    t=h->rlink;
+    printf("%d",t->data);
+    h->rlink=t->rlink;
+    if(h->rlink)
+        (h->rlink)->llink=0;
+    free(t);
+}
+void delete_rear(dll *h)
+{
+     dll *t,*l;
+    if(h->rlink==0)
+    {
+        printf("empty\n");
+        return;
+    }
+    if((h->rlink)->rlink==0)
+    {
+        delete_front(h);
+        return;
+    }
+    for(l=0,t=h->rlink;t->rlink!=0;l=t,t=t->rlink);
+    printf("%d",t->data);
+      l->rlink=0;
+    free(t);
+}
